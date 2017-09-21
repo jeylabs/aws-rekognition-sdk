@@ -1,5 +1,5 @@
 {
-    "name": "aws-rekognition-sdk",
+    "name": "jeylabs/aws-rekognition-sdk",
     "description": "",
     "keywords": ["jeylabs", "laravel", "aws", "rekognition"],
     "license": "MIT",
