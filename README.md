@@ -4,7 +4,7 @@
 Via Composer
 
 ``` bash
-$ composer require jeylabs/ws-rekognition-sdk
+$ composer require jeylabs/aws-rekognition-sdk
 ```
 
 Add the following to the providers array in config/app.php:
