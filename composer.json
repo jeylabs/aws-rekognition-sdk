@@ -1,0 +1,28 @@
+{
+    "name": "aws-rekognition-sdk",
+    "description": "",
+    "keywords": ["jeylabs", "laravel", "aws", "rekognition"],
+    "license": "MIT",
+    "type": "Package",
+    "authors": [
+        {
+            "name": "jeylabs",
+            "email": "ratheep.ceymplon@jeylabs.com",
+            "homepage": "https://jeylabs.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "laravel/framework": ">=5.3.23",
+        "aws/aws-sdk-php-laravel": "^3.1",
+        "php" : "~5.5|~7.0"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "Jeylabs\\AwsRekognition\\": "src"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
