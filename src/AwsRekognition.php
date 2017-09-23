@@ -1,9 +1,11 @@
 <?php
 
 namespace Jeylabs\AwsRekognition;
+
 use Aws\Rekognition\RekognitionClient;
 
-class AwsRekognition{
+class AwsRekognition
+{
 
     protected $client;
 
@@ -12,46 +14,68 @@ class AwsRekognition{
         $this->client = new RekognitionClient(config('rekognition'));
     }
 
-    public function compareFaces($targetImageName, $sourceImageName, $SimilarityThreshold = 50, $imageVersion = null)
+    public function compareFaces($targetImageName, $sourceImageName, $targetImageBytes = null, $sourceImageBytes = null, $SimilarityThreshold = 50, $targetImageVersion = null, $sourceImageVersion = null)
     {
-        return $this->client->compareFaces([
+        $params = [
             'SimilarityThreshold' => $SimilarityThreshold,
             'SourceImage' => [
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $sourceImageName,
-                    'Version' => $imageVersion,
                 ],
             ],
             'TargetImage' => [
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $targetImageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-        ]);
+        ];
+        if ($sourceImageVersion) {
+            $params['SourceImage']['S3Object']['Version'] = $sourceImageVersion;
+        }
+        if ($targetImageVersion) {
+            $params['TargetImage']['S3Object']['Version'] = $targetImageVersion;
+        }
+        if ($targetImageBytes) {
+            $params['TargetImage']['Bytes'] = $targetImageBytes;
+        }
+        if ($sourceImageBytes) {
+            $params['SourceImage']['Bytes'] = $sourceImageBytes;
+        }
+        return $this->client->compareFaces($params);
     }
 
-    public function compareFacesAsync($targetImageName, $sourceImageName, $SimilarityThreshold = 50, $imageVersion = null)
+    public function compareFacesAsync($targetImageName, $sourceImageName, $targetImageBytes = null, $sourceImageBytes = null, $SimilarityThreshold = 50, $targetImageVersion = null, $sourceImageVersion = null)
     {
-        return $this->client->compareFacesAsync([
+        $params = [
             'SimilarityThreshold' => $SimilarityThreshold,
             'SourceImage' => [
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $sourceImageName,
-                    'Version' => $imageVersion,
                 ],
             ],
             'TargetImage' => [
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $targetImageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-        ]);
+        ];
+        if ($sourceImageVersion) {
+            $params['SourceImage']['S3Object']['Version'] = $sourceImageVersion;
+        }
+        if ($targetImageVersion) {
+            $params['TargetImage']['S3Object']['Version'] = $targetImageVersion;
+        }
+        if ($targetImageBytes) {
+            $params['TargetImage']['Bytes'] = $targetImageBytes;
+        }
+        if ($sourceImageBytes) {
+            $params['SourceImage']['Bytes'] = $sourceImageBytes;
+        }
+        return $this->client->compareFacesAsync($params);
     }
 
     public function createCollection($collectionId)
@@ -99,90 +123,149 @@ class AwsRekognition{
     }
 
 
-    public function detectFaces($imageName, $attributes = ['DEFAULT'], $imageVersion = null)
+    public function detectFaces($imageName, $attributes = ['DEFAULT'], $imageBytes = null, $imageVersion = null)
     {
-        return $this->client->detectFaces([
+        $params = [
             'Attributes' => $attributes,
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-        ]);
+        ];
+
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+
+        if ($imageBytes) {
+            $params['Image']['Bytes'] = $imageBytes;
+        }
+
+        return $this->client->detectFaces();
     }
 
-    public function detectFacesAsync($imageName, $attributes = ['DEFAULT'], $imageVersion = null)
+    public function detectFacesAsync($imageName, $attributes = ['DEFAULT'], $imageBytes = null, $imageVersion = null)
     {
-        return $this->client->detectFacesAsync([
+        $params = [
             'Attributes' => $attributes,
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-        ]);
+        ];
+
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+
+        if ($imageBytes) {
+            $params['Image']['Bytes'] = $imageBytes;
+        }
+
+        return $this->client->detectFacesAsync($params);
     }
 
-    public function detectLabels($imageName, $maxLabels = 123, $minConfidence = 70, $imageVersion = null)
+    public function detectLabels($imageName, $imageBytes = null, $maxLabels = null, $minConfidence = null, $imageVersion = null)
     {
-        return $this->client->detectLabels([
+        $params = [
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-            'MaxLabels' => $maxLabels,
-            'MinConfidence' => $minConfidence,
-        ]);
+        ];
+
+        if ($imageBytes) {
+            $params['Image']['Bytes'] = $imageBytes;
+        }
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+        if ($maxLabels) {
+            $params['MaxLabels'] = $maxLabels;
+        }
+        if ($minConfidence) {
+            $params['MinConfidence'] = $minConfidence;
+        }
+
+        return $this->client->detectLabels($params);
     }
 
-    public function detectLabelsAsync($imageName, $maxLabels = 123, $minConfidence = 70, $imageVersion = null)
+    public function detectLabelsAsync($imageName, $imageBytes = null, $maxLabels = null, $minConfidence = null, $imageVersion = null)
     {
-        return $this->client->detectLabelsAsync([
+        $params = [
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-            'MaxLabels' => $maxLabels,
-            'MinConfidence' => $minConfidence,
-        ]);
+        ];
+
+        if ($imageBytes) {
+            $params['Image']['Bytes'] = $imageBytes;
+        }
+
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+        if ($maxLabels) {
+            $params['MaxLabels'] = $maxLabels;
+        }
+        if ($minConfidence) {
+            $params['MinConfidence'] = $minConfidence;
+        }
+
+        return $this->client->detectLabelsAsync($params);
     }
 
-    public function detectModerationLabels($imageName, $minConfidence = 70, $imageVersion = null)
+    public function detectModerationLabels($imageName, $imageBytes = null, $minConfidence = null, $imageVersion = null)
     {
-        return $this->client->detectLabelsAsync([
+        $params = [
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-            'MinConfidence' => $minConfidence,
-        ]);
+        ];
+        if ($imageBytes) {
+            $params['Image']['Bytes'] = $imageBytes;
+        }
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+        if ($minConfidence) {
+            $params['MinConfidence'] = $minConfidence;
+        }
+        return $this->client->detectLabelsAsync($params);
     }
 
-    public function detectModerationLabelsAsync($imageName, $minConfidence = 70, $imageVersion = null)
+    public function detectModerationLabelsAsync($imageName, $imageBytes = null, $minConfidence = null, $imageVersion = null)
     {
-        return $this->client->detectLabelsAsync([
+        $params = [
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-            'MinConfidence' => $minConfidence,
-        ]);
+        ];
+        if ($imageBytes) {
+            $params['Image']['Bytes'] = $imageBytes;
+        }
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+        if ($minConfidence) {
+            $params['MinConfidence'] = $minConfidence;
+        }
+        return $this->client->detectLabelsAsync($params);
     }
 
     public function getCelebrityInfo($id)
@@ -199,24 +282,55 @@ class AwsRekognition{
         ]);
     }
 
-    public function indexFaces($imageName, $collectionId, $detectionAttributes = ['DEFAULT'], $ExternalImageId = null, $imageVersion = null)
+    public function indexFaces($imageName, $collectionId, $imageBytes = null, $detectionAttributes = ['DEFAULT'], $ExternalImageId = null, $imageVersion = null)
     {
-        return $this->client->indexFaces([
+        $params = [
             'CollectionId' => $collectionId, // REQUIRED
-            'DetectionAttributes' => $detectionAttributes,
-            'ExternalImageId' => '<string>',
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-        ]);
+        ];
+        if ($imageBytes) {
+            $params['Image']['Bytes'] = $imageBytes;
+        }
+        if ($detectionAttributes) {
+            $params['DetectionAttributes'] = $detectionAttributes;
+        }
+        if ($ExternalImageId) {
+            $params['ExternalImageId'] = $ExternalImageId;
+        }
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+        return $this->client->indexFaces($params);
     }
 
-    public function indexFacesAsync($imageName, $collectionId, $detectionAttributes = ['DEFAULT'], $ExternalImageId = null, $imageVersion = null)
+    public function indexFacesAsync($imageName, $collectionId, $imageBytes = null, $detectionAttributes = ['DEFAULT'], $ExternalImageId = null, $imageVersion = null)
     {
+        $params = [
+            'CollectionId' => $collectionId, // REQUIRED
+            'Image' => [ // REQUIRED
+                'S3Object' => [
+                    'Bucket' => config('rekognition.bucket'),
+                    'Name' => $imageName,
+                ],
+            ],
+        ];
+        if ($imageBytes) {
+            $params['Image']['Bytes'] = $imageBytes;
+        }
+        if ($detectionAttributes) {
+            $params['DetectionAttributes'] = $detectionAttributes;
+        }
+        if ($ExternalImageId) {
+            $params['ExternalImageId'] = $ExternalImageId;
+        }
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
         return $this->client->indexFacesAsync([
             'CollectionId' => $collectionId, // REQUIRED
             'DetectionAttributes' => $detectionAttributes,
@@ -233,105 +347,160 @@ class AwsRekognition{
 
     public function listCollections($MaxResults, $NextToken = null)
     {
-        return $this->client->listCollections([
+        $params = [
             'MaxResults' => $MaxResults,
-            'NextToken' => $NextToken,
-        ]);
+        ];
+        if ($NextToken) {
+            $params['NextToken'] = $NextToken;
+        }
+        return $this->client->listCollections($params);
     }
 
     public function listCollectionsAsync($MaxResults = null, $NextToken = null)
     {
-        return $this->client->listCollectionsAsync([
+        $params = [
             'MaxResults' => $MaxResults,
-            'NextToken' => $NextToken,
-        ]);
+        ];
+        if ($NextToken) {
+            $params['NextToken'] = $NextToken;
+        }
+        return $this->client->listCollectionsAsync($params);
     }
 
     public function listFaces($CollectionId, $MaxResults = null, $NextToken = null)
     {
-        return $this->client->listFaces([
+        $params = [
             'CollectionId' => $CollectionId,
-            'MaxResults' => $MaxResults,
-            'NextToken' => $NextToken,
-        ]);
+        ];
+        if ($MaxResults) {
+            $params['MaxResults'] = $MaxResults;
+        }
+        if ($NextToken) {
+            $params['NextToken'] = $NextToken;
+        }
+        return $this->client->listFaces($params);
+    }
+
+    public function listFacesAsync($CollectionId, $MaxResults = null, $NextToken = null)
+    {
+        $params = [
+            'CollectionId' => $CollectionId,
+        ];
+        if ($MaxResults) {
+            $params['MaxResults'] = $MaxResults;
+        }
+        if ($NextToken) {
+            $params['NextToken'] = $NextToken;
+        }
+        return $this->client->listFacesAsync($params);
     }
 
     public function recognizeCelebrities($imageName, $imageVersion = null)
     {
-        return $this->client->recognizeCelebrities([
+        $params = [
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-        ]);
+        ];
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+        return $this->client->recognizeCelebrities($params);
     }
 
     public function recognizeCelebritiesAsync($imageName, $imageVersion = null)
     {
-        return $this->client->recognizeCelebrities([
+        $params = [
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-        ]);
+        ];
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+        return $this->client->recognizeCelebrities($params);
     }
 
 
     public function searchFaces($collectionId, $faceId, $faceMatchThreshold = null, $axFaces = null)
     {
-        return $this->client->searchFaces([
+        $params = [
             'CollectionId' => $collectionId, // REQUIRED
             'FaceId' => $faceId, // REQUIRED
-            'FaceMatchThreshold' => $faceMatchThreshold,
-            'MaxFaces' => $axFaces,
-        ]);
+        ];
+        if ($faceMatchThreshold) {
+            $params['FaceMatchThreshold'] = $faceMatchThreshold;
+        }
+        if ($axFaces) {
+            $params['MaxFaces'] = $axFaces;
+        }
+        return $this->client->searchFaces($params);
     }
 
     public function searchFacesAsync($collectionId, $faceId, $faceMatchThreshold = null, $axFaces = null)
     {
-        return $this->client->searchFaces([
+        $params = [
             'CollectionId' => $collectionId, // REQUIRED
             'FaceId' => $faceId, // REQUIRED
-            'FaceMatchThreshold' => $faceMatchThreshold,
-            'MaxFaces' => $axFaces,
-        ]);
+        ];
+        if ($faceMatchThreshold) {
+            $params['FaceMatchThreshold'] = $faceMatchThreshold;
+        }
+        if ($axFaces) {
+            $params['MaxFaces'] = $axFaces;
+        }
+        return $this->client->searchFaces($params);
     }
 
     public function searchFacesByImage($collectionId, $imageName, $imageVersion = null, $faceMatchThreshold = null, $axFaces = null)
     {
-        return $this->client->searchFacesByImage([
+        $params = [
             'CollectionId' => $collectionId, // REQUIRED
-            'FaceMatchThreshold' => $faceMatchThreshold,
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-            'MaxFaces' => $axFaces,
-        ]);
+        ];
+        if ($faceMatchThreshold) {
+            $params['FaceMatchThreshold'] = $faceMatchThreshold;
+        }
+        if ($axFaces) {
+            $params['MaxFaces'] = $axFaces;
+        }
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+        return $this->client->searchFacesByImage($params);
     }
 
     public function searchFacesByImageAsync($collectionId, $imageName, $imageVersion = null, $faceMatchThreshold = null, $axFaces = null)
     {
-        return $this->client->searchFacesByImageAsync([
+        $params = [
             'CollectionId' => $collectionId, // REQUIRED
-            'FaceMatchThreshold' => $faceMatchThreshold,
             'Image' => [ // REQUIRED
                 'S3Object' => [
                     'Bucket' => config('rekognition.bucket'),
                     'Name' => $imageName,
-                    'Version' => $imageVersion,
                 ],
             ],
-            'MaxFaces' => $axFaces,
-        ]);
+        ];
+        if ($faceMatchThreshold) {
+            $params['FaceMatchThreshold'] = $faceMatchThreshold;
+        }
+        if ($axFaces) {
+            $params['MaxFaces'] = $axFaces;
+        }
+        if ($imageVersion) {
+            $params['Image']['S3Object']['Version'] = $imageVersion;
+        }
+        return $this->client->searchFacesByImageAsync($params);
     }
 }
