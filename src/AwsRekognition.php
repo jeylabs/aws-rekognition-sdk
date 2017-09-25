@@ -143,7 +143,7 @@ class AwsRekognition
             $params['Image']['Bytes'] = $imageBytes;
         }
 
-        return $this->client->detectFaces();
+        return $this->client->detectFaces($params);
     }
 
     public function detectFacesAsync($imageName, $attributes = ['DEFAULT'], $imageBytes = null, $imageVersion = null)
@@ -428,7 +428,7 @@ class AwsRekognition
     }
 
 
-    public function searchFaces($collectionId, $faceId, $faceMatchThreshold = null, $axFaces = null)
+    public function searchFaces($collectionId, $faceId, $faceMatchThreshold = null, $maxFaces = null)
     {
         $params = [
             'CollectionId' => $collectionId, // REQUIRED
@@ -437,8 +437,8 @@ class AwsRekognition
         if ($faceMatchThreshold) {
             $params['FaceMatchThreshold'] = $faceMatchThreshold;
         }
-        if ($axFaces) {
-            $params['MaxFaces'] = $axFaces;
+        if ($maxFaces) {
+            $params['MaxFaces'] = $maxFaces;
         }
         return $this->client->searchFaces($params);
     }
